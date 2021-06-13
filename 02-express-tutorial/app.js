@@ -1,37 +1,25 @@
-const http = require('http');
-const { readFileSync } = require('fs');
+const app = require('express')();
+const { products } = require('./data')
 
-// get all files
-const homePage = readFileSync('./index.html');
-
-const server = http.createServer((req, res) => {
-    console.log(req.method);
-    console.log(req.url);
-    const url = req.url;
-    // home page
-    if (url === '/') {
-        res.writeHead(200, {
-            'content-type' : 'text/html'
-        })
-        res.write(homePage)
-        res.end();
-    }
-    // about page
-    else if (url === '/about') {
-        res.writeHead(200, {
-            'content-type' : 'text/html'
-        })
-        res.write('<h1>About Page</h1>')
-        res.end();
-    }
-    else {
-        res.writeHead(404, {
-            'content-type' : 'text/html'
-        })
-        res.write('<h1>Page not found</h1>')
-        res.end();
-    }
-    
+app.get('/', (req, res) => {
+    res.send('<h1> Home Page</h1><a href="/api/products">products</a>');
 })
 
-server.listen(5000);
+app.get('/api/products', (req, res) => {
+    const newProd = products.map( product => {
+        const {id, name, image} = product;
+        return { id, name, image};
+    })
+    res.json(newProd)
+})
+
+app.get('/api/products/1', (req, res) => {
+    const singleProd = products.find( product => product.id === 1 )
+    res.json(singleProd)
+})
+
+
+
+app.listen(5000, () => {
+    console.log('server is listening on port 5000...');
+})
