@@ -12,10 +12,23 @@ app.get('/api/products', (req, res) => {
     })
     res.json(newProd)
 })
+// route parameter
+app.get('/api/products/:productID', (req, res) => {
+    //console.log(req.params);
+    const { productID } = req.params;
+    const singleProd = products.find( product => product.id === Number(productID));
 
-app.get('/api/products/1', (req, res) => {
-    const singleProd = products.find( product => product.id === 1 )
+    if ( !singleProd ){
+        return res.status(404).send('Product Does Not Exist');
+    }
+
     res.json(singleProd)
+})
+
+// complext route parameter
+app.get('/api/products/:productID/reviews/:reviewID', (req, res) => {
+    console.log(req.params);
+    res.send('Hello');
 })
 
 
